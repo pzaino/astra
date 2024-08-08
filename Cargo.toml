@@ -1,0 +1,17 @@
+[package]
+name = "astra"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+hyper = "0.14"
+tonic = { version = "0.6", features = ["transport"] }
+tracing = "0.1"
+sqlx = { version = "0.6", features = ["postgres", "runtime-tokio-native-tls"] }
+etcd-client = "0.4"
+
+[lib]
+name = "astra"
+path = "src/lib.rs"

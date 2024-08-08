@@ -1,0 +1,11 @@
+# IDEs
+.idea
+.vscode
+
+# Rust
+/target
+Cargo.lock
+
+# SAST / DAST
+.scannerwork/
+sonar-project.properties
