@@ -4,6 +4,7 @@ use super::storage::StorageBackend;
 use async_trait::async_trait;
 use std::error::Error;
 
+#[derive(Debug, Clone)]
 pub struct DatabaseBackend {
     // This would be your database connection
 }

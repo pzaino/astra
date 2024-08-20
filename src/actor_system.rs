@@ -7,28 +7,38 @@
 //! ## Example
 //!
 //! ```rust
-//! use actor::{Actor, ActorSystem};
+//! use astra::actor_system::{Actor, ActorSystem, Message};
+//! use async_trait::async_trait;
+//! use std::error::Error;
 //!
 //! struct SimpleActor;
 //!
 //! #[async_trait]
 //! impl Actor for SimpleActor {
+//!     type Message = String;
+//!     type Error = String;
 //!
-//!    type Message = String;
-//!    type Error = String;
-//!
-//!    async fn receive(&mut self, message: String) -> Result<(), String> {
-//!      println!("Received message: {}", message);
-//!      Ok(())
-//!    }
+//!     async fn receive(&mut self, message: Message<Self::Message>) -> Result<(), Self::Error> {
+//!         match message {
+//!             Message::Regular(msg) => {
+//!                 println!("Received message: {}", msg);
+//!                 Ok(())
+//!             }
+//!             Message::Shutdown => {
+//!                 println!("Shutting down SimpleActor.");
+//!                 Ok(())
+//!             }
+//!         }
+//!     }
 //! }
-//! ```
-//! ```rust
+//!
 //! #[tokio::main]
-//! async fn main() {
-//!   let mut system = ActorSystem::new();
-//!   system.add_actor("simple_actor".to_string(), SimpleActor);
-//!   system.send_message("simple_actor", "Hello, actor!".to_string()).await.unwrap();
+//! async fn main() -> Result<(), Box<dyn Error>> {
+//!     let mut system = ActorSystem::new();
+//!     system.add_actor("simple_actor".to_string(), SimpleActor);
+//!     system.send_message("simple_actor", "Hello, actor!".to_string()).await?;
+//!     system.shutdown().await;
+//!     Ok(())
 //! }
 //! ```
 
@@ -56,12 +66,13 @@ pub trait Actor {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Message<M> {
     Regular(M),
     Shutdown,
 }
 
+#[derive(Debug, Clone)]
 pub struct ActorSystem<M> {
     actors: HashMap<String, Sender<Message<M>>>,
 }

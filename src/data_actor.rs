@@ -1,3 +1,26 @@
+//! # `DataActor` is a generic actor that can perform operations using a specified backend.
+//!
+//! ## Example
+//!
+//! ```rust
+//! use astra::data_actor::DataActor;
+//! use astra::backends::file::FileBackend;
+//!
+//! #[tokio::main]
+//! async fn main() -> Result<(), Box<dyn std::error::Error>> {
+//!    let file_backend = FileBackend::new("data.txt").await?;
+//!    let mut actor = DataActor::new(file_backend);
+//!
+//!    actor.write_to_backend("Hello, actor!").await?;
+//!    let data = actor.read_from_backend().await?;
+//!
+//!    assert_eq!(data, "Hello, actor!");
+//!    actor.cleanup_backend().await?;
+//!
+//!    Ok(())
+//! }
+//! ```
+
 // src/data_actor.rs
 use crate::backends::storage::StorageBackend;
 use async_trait::async_trait;
@@ -6,22 +29,8 @@ use std::error::Error;
 
 use crate::actor_system::{Actor, Message}; // Assuming Actor and Message are defined in a module named actor_system
 
-/// `DataActor` is a generic actor that can perform operations using a specified backend.
-///
-/// # Example
-///
-/// ```
-/// use your_project::actor::DataActor;
-/// use your_project::backends::file_backend::FileBackend;
-///
-/// #[tokio::main]
-/// async fn main() {
-///     let file_backend = FileBackend::new("example.txt").await.unwrap();
-///     let actor = DataActor { backend: file_backend };
-/// }
-/// ```
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DataActor<B: StorageBackend> {
     backend: B,
 }
