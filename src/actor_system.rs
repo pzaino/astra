@@ -122,3 +122,9 @@ impl<M: Send + 'static + std::fmt::Debug> ActorSystem<M> {
         }
     }
 }
+
+impl Default for ActorSystem<String> {
+    fn default() -> Self {
+        ActorSystem::new()
+    }
+}

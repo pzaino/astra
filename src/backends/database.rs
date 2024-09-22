@@ -16,6 +16,12 @@ impl DatabaseBackend {
     }
 }
 
+impl Default for DatabaseBackend {
+    fn default() -> Self {
+        DatabaseBackend::new()
+    }
+}
+
 #[async_trait]
 impl StorageBackend for DatabaseBackend {
     // Write data to the database
